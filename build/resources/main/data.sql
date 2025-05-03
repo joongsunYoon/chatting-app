@@ -38,10 +38,21 @@ VALUES
     (6, 1, 4, DATEADD('DAY', -3, NOW()), NOW()),
     (1, 6, 3, NOW(), NOW());
 
--- ✅ CASE 5: user 2 ↔ user 3 vs user 2 ↔ user 4 (완전동점 → 먼저 하트 준 사람 선택)
+-- ✅ CASE 5 : user 2 ↔ user 3 vs user 2 ↔ user 4 (완전동점 → 먼저 하트 준 사람 선택)
 INSERT INTO affinity (to_user_id, from_user_id, affinity_score, created_at, updated_at)
 VALUES
     (3, 2, 5, '2024-01-01 12:00:00', NOW()),
     (2, 3, 5, NOW(), NOW()),
     (4, 2, 5, '2024-01-01 13:00:00', NOW()),
     (2, 4, 5, NOW(), NOW());
+
+-- 1. 채팅방 생성
+INSERT INTO chat_room (created_at, updated_at)
+VALUES (NOW(), NOW());
+
+-- 2. 방 번호 확인 (자동 증가된 chat_room_id 확인 필요)
+-- 예: 방 번호가 1이라고 가정할 경우 아래와 같이 insert
+INSERT INTO chat_room_members (room_id, user_id, joined_at)
+VALUES
+    (1, 1, NOW()),  -- user 1 참가
+    (1, 2, NOW());  -- user 2 참가

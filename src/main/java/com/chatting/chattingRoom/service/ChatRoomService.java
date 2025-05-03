@@ -5,7 +5,7 @@ import com.chatting.affinity.repository.AffinityRepository;
 import com.chatting.chattingRoom.model.ChatRoom;
 import com.chatting.chattingRoom.model.ChatRoomMember;
 import com.chatting.chattingRoom.repository.ChatRoomMembersRepository;
-import com.chatting.chattingRoom.repository.ChatRoomsRepository;
+import com.chatting.chattingRoom.repository.ChatRoomRepository;
 import com.chatting.user.model.Users;
 import com.chatting.user.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ChatRoomService {
 
     private final AffinityRepository affinityRepository;
-    private final ChatRoomsRepository chatRoomsRepository;
+    private final ChatRoomRepository chatRoomsRepository;
     private final ChatRoomMembersRepository chatRoomMembersRepository;
     private final UsersRepository usersRepository;
 
