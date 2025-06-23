@@ -3,17 +3,21 @@ spring:
     restart:
       enabled: false
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
+    url: jdbc:mysql://localhost:3306/chatting_db?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none  # ← 생성은 수동 (schema.sql로)
+      show-sql: true
+      properties:
+      hibernate:
+        format_sql: true
   sql:
     init:
-      mode: always
-      schema-locations: classpath:schema.sql
+      mode: never
+  pubnub:
+    subscribe-key: sub-c-f6869e32-61b1-497b-98b0-d6f084e08a34
+    publish-key: pub-c-81efa55b-2f4d-4c1c-a3b9-7c274f59f88c

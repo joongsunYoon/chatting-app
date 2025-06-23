@@ -1,4 +1,7 @@
 package com.chatting.user.service;
+import com.chatting.global.exception.CustomException;
+import com.chatting.global.exception.ErrorCode;
+import com.chatting.user.dto.MatchedResponseDto;
 import com.chatting.user.dto.UserRegistrationDto;
 import com.chatting.user.model.Users;
 import com.chatting.user.repository.UsersRepository;
@@ -26,7 +29,6 @@ public class UserService {
                 .password(userRegistrationDto.getPassword())
                 .name(userRegistrationDto.getName())
                 .phone(userRegistrationDto.getPhone())
-                .status("ACTIVE")
                 .build();
 
         return userRepository.save(user);
@@ -43,4 +45,37 @@ public class UserService {
     public Optional<Users> findByUsername(String userName) {
         return userRepository.findByUsername(userName);
     }
+
+    public MatchedResponseDto isMatched(Long userId) {
+        try {
+            Users user = userRepository.findById(userId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
+            return MatchedResponseDto.fromEntity(user);
+
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(ErrorCode.INVALID_DATA);
+
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void updateIsMatched(Long userId) {
+        try {
+            Users user = userRepository.findById(userId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
+
+            user.setIsMatched(true);  // 상태 업데이트
+            userRepository.save(user);
+
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(ErrorCode.INVALID_DATA);
+
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
 }

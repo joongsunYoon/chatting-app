@@ -3,6 +3,8 @@ package com.chatting.chattingRoom.model;
 import com.chatting.user.model.Users;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
@@ -29,18 +31,18 @@ public class ChatRoomMember {
 
 
     @Column(name = "joined_at")
-    private LocalDateTime joinedAt;
+    private Timestamp joinedAt;
 
     @PrePersist
     public void onJoined() {
-        this.joinedAt = LocalDateTime.now();
+        this.joinedAt = Timestamp.valueOf(LocalDateTime.now());
     }
 
     public static ChatRoomMember of(ChatRoom room, Users user) {
         return ChatRoomMember.builder()
                 .chatRoom(room)
                 .user(user)
-                .joinedAt(LocalDateTime.now())
+                .joinedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .build();
     }
 

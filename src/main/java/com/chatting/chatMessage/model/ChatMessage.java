@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "message")
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Message {
+public class ChatMessage {
     @Id
     @Column(name = "message_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,16 +25,16 @@ public class Message {
     private String message;
 
     @Column(name = "sent_at")
-    private LocalDateTime sentAt;
+    private Timestamp sentAt;
 
     @Column(name = "is_read")
     private Boolean isRead;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private ChatRoom chatRoom;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id")
     private Users sender;
 }

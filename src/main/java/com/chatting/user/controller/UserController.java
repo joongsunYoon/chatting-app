@@ -1,23 +1,26 @@
 package com.chatting.user.controller;
 
+import com.chatting.security.JwtTokenProvider;
 import com.chatting.user.dto.LoginRequestDto;
+import com.chatting.user.dto.MatchedResponseDto;
 import com.chatting.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import com.chatting.global.exception.GlobalExceptionHandler.ApiResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 
-@Controller
+
+@RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/sessions")
 public class UserController {
-    private final UserService userService;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/login")
     public String loginPage(Model model) {
@@ -37,5 +40,16 @@ public class UserController {
             model.addAttribute("error", "아이디 또는 비밀번호가 틀렸습니다.");
             return "user/login"; // 다시 로그인 페이지
         }
+    }
+
+    @GetMapping("/isMatched")
+    public ResponseEntity<ApiResponse> isMatched(@RequestHeader("Authorization") String authHeader) {
+
+        String token = authHeader.replace("Bearer ", "");
+        Long userId = jwtTokenProvider.validateAndGetUserId(token);
+
+        MatchedResponseDto dto = userService.isMatched(userId);
+        return ResponseEntity.ok(new ApiResponse(200 , "결과 출력되었습니다", dto));
+
     }
 }
