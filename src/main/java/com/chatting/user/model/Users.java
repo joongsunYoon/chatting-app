@@ -29,6 +29,7 @@ public class Users {
     private Boolean isMatched;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private Integer affinityQuantity;
 
 
     @PrePersist

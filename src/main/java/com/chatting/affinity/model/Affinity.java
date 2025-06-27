@@ -22,7 +22,7 @@ public class Affinity {
     @Id
     @Column(name = "affinity_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long AffinityId;
+    private Long affinityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user_id", nullable = false)
@@ -32,14 +32,16 @@ public class Affinity {
     @JoinColumn(name = "to_user_id", nullable = false)
     private Users toUser;
 
-    @Column(name = "affinity_score")
-    private int affinityScore;
-
-    @Column(name = "created_at")
+    private Long affinityScore;
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    private Direction lastChangeDirection;
+
+    public enum Direction {
+        PLUS,MINUS
+    }
 
     @PrePersist
     protected void onCreate() {

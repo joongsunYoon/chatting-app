@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>채팅 테스트</title>
+</head>
+<body>
+<h2>메시지 보내기</h2>
+<form id="sendForm">
+    <label>채팅방 ID: <input type="number" id="roomId" required></label><br><br>
+    <label>보낸 사람 ID: <input type="number" id="senderId" required></label><br><br>
+    <label>메시지 내용: <input type="text" id="message" required></label><br><br>
+    <button type="submit">메시지 전송</button>
+</form>
+
+<hr>
+
+<h2>채팅방 메시지 조회</h2>
+<label>채팅방 ID: <input type="number" id="getRoomId"></label>
+<button onclick="loadMessages()">조회</button>
+
+<ul id="messageList"></ul>
+
+<script>
+    document.getElementById("sendForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const data = {
+            message: document.getElementById("message").value,
+            roomId: parseInt(document.getElementById("roomId").value),
+            senderId: parseInt(document.getElementById("senderId").value)
+        };
+
+        fetch("/api/messages", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(json => {
+                alert("메시지 전송 성공: " + JSON.stringify(json));
+                document.getElementById("message").value = "";
+            })
+            .catch(err => {
+                alert("에러 발생: " + err);
+            });
+    });
+
+    function loadMessages() {
+        const roomId = document.getElementById("getRoomId").value;
+        fetch(`/api/messages/room/${roomId}`)
+            .then(res => res.json())
+            .then(messages => {
+                const list = document.getElementById("messageList");
+                list.innerHTML = "";
+                messages.forEach(msg => {
+                    const li = document.createElement("li");
+                    li.textContent = `[${msg.sentAt}] ${msg.sender?.userId ?? '익명'}: ${msg.message}`;
+                    list.appendChild(li);
+                });
+            });
+    }
+</script>
+</body>
+</html>
