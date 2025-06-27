@@ -55,8 +55,6 @@ public class UserService {
         } catch (IllegalArgumentException e) {
             throw new CustomException(ErrorCode.INVALID_DATA);
 
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -71,9 +69,15 @@ public class UserService {
         } catch (IllegalArgumentException e) {
             throw new CustomException(ErrorCode.INVALID_DATA);
 
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public Integer getUserAffinityQuantity(Long userId) {
+
+        Users user = userRepository.findById(userId)
+                .orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+        return user.getAffinityQuantity();
+
     }
 
 

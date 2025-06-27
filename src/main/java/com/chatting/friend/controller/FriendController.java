@@ -33,14 +33,14 @@ public class FriendController {
 
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse> getFriends(
+    public ResponseEntity<ApiResponse<List<FriendListResponseDto>>> getFriends(
             @RequestHeader("Authorization") String authHeader) {
 
         String token = authHeader.replace("Bearer ", "");
         Long userId = jwtTokenProvider.validateAndGetUserId(token);
 
         List<FriendListResponseDto> friendList = friendService.getFriendList(userId);
-        return ResponseEntity.ok(new ApiResponse(200, "친구목록 조회 성공", friendList));
+        return ResponseEntity.ok(new ApiResponse<>(200, "친구목록 조회 성공", friendList));
     }
 
 

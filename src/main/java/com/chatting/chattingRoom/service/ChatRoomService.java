@@ -52,9 +52,9 @@ public class ChatRoomService {
         }
 
         // 사건이 여러 개인 경우: 최고 점수 찾기
-        int maxScore = mutualMap.values().stream()
-                .mapToInt(p -> p.given().getAffinityScore() + p.received().getAffinityScore())
-                .max().orElse(0);
+        long maxScore = mutualMap.values().stream()
+                .mapToLong(p -> p.given().getAffinityScore() + p.received().getAffinityScore())
+                .max().orElse(0L);
 
         List<Map.Entry<Long, AffinityPairDetail>> topEvents = mutualMap.entrySet().stream()
                 .filter(e -> e.getValue().given().getAffinityScore() +
@@ -84,7 +84,7 @@ public class ChatRoomService {
 
         if (!equalGiveReceive.isEmpty()) {
             return equalGiveReceive.stream()
-                    .max(Comparator.comparingInt(e -> e.getValue().given().getAffinityScore()))
+                    .max(Comparator.comparingLong(e -> e.getValue().given().getAffinityScore()))
                     .orElse(null);
         }
 
@@ -119,6 +119,6 @@ public class ChatRoomService {
         chatRoomMembersRepository.save(ChatRoomMember.of(room, user2));
     }
 
-    // ✅ Affinity 두 개 (userId → otherId, otherId → userId) 쌍을 하나로 묶는 record
+    // Affinity 두 개 (userId -> otherId, otherId -> userId) 쌍을 하나로 묶는 record
     private record AffinityPairDetail(Affinity given, Affinity received) {}
 }
