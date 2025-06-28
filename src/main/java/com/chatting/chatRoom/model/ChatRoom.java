@@ -1,4 +1,4 @@
-package com.chatting.chattingRoom.model;
+package com.chatting.chatRoom.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

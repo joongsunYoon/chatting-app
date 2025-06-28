@@ -1,4 +1,4 @@
-package com.chatting.chattingRoom.model;
+package com.chatting.chatRoom.model;
 
 import com.chatting.user.model.Users;
 import jakarta.persistence.*;

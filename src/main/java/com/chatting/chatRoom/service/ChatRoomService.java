@@ -1,11 +1,11 @@
-package com.chatting.chattingRoom.service;
+package com.chatting.chatRoom.service;
 
 import com.chatting.affinity.model.Affinity;
 import com.chatting.affinity.repository.AffinityRepository;
-import com.chatting.chattingRoom.model.ChatRoom;
-import com.chatting.chattingRoom.model.ChatRoomMember;
-import com.chatting.chattingRoom.repository.ChatRoomMembersRepository;
-import com.chatting.chattingRoom.repository.ChatRoomRepository;
+import com.chatting.chatRoom.model.ChatRoom;
+import com.chatting.chatRoom.model.ChatRoomMember;
+import com.chatting.chatRoom.repository.ChatRoomMembersRepository;
+import com.chatting.chatRoom.repository.ChatRoomRepository;
 import com.chatting.user.model.Users;
 import com.chatting.user.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;

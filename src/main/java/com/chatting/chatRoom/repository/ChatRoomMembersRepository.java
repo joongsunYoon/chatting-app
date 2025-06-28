@@ -1,7 +1,7 @@
-package com.chatting.chattingRoom.repository;
+package com.chatting.chatRoom.repository;
 
-import com.chatting.chattingRoom.model.ChatRoomMember;
-import com.chatting.chattingRoom.model.ChatRoom;
+import com.chatting.chatRoom.model.ChatRoomMember;
+import com.chatting.chatRoom.model.ChatRoom;
 import com.chatting.user.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
