@@ -6,13 +6,14 @@ import com.pubnub.api.PubNubException;
 import com.pubnub.api.enums.PNReconnectionPolicy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+@Configuration
 public class PubNubConfig {
+
     @Bean
     public PubNub pubNubClient() throws PubNubException {
         PNConfiguration pnConfig = new PNConfiguration("spring-chat-server");
-        pnConfig.setSubscribeKey("sub-c-f6869e32-61b1-497b-98b0-d6f084e08a34");
-        pnConfig.setPublishKey("pub-c-81efa55b-2f4d-4c1c-a3b9-7c274f59f88c");
+        pnConfig.setSubscribeKey("sub-c-d3a89a6e-0af0-4f31-a506-420aa076f71e");
+        pnConfig.setPublishKey("pub-c-6128c948-fad3-4232-b209-10000b317f0c");
         pnConfig.setUuid("spring-chat-server");
         pnConfig.setReconnectionPolicy(PNReconnectionPolicy.LINEAR);
 
