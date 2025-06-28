@@ -1,15 +1,21 @@
 package com.chatting.pubnub.controller;
 
+import com.chatting.chatRoom.service.ChatRoomService;
+import com.chatting.global.exception.ErrorCode;
 import com.chatting.global.exception.GlobalExceptionHandler.ApiResponse;
 import com.chatting.pubnub.config.PubNubConfig;
 import com.chatting.pubnub.service.PubnubPublishService;
+import com.chatting.security.JwtTokenProvider;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/pubnub")
@@ -18,6 +24,8 @@ public class PubnubController {
 
     private final PubNub pubNub;
     private final PubnubPublishService pubnubPublishService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ChatRoomService chatRoomService;
 
     @PostMapping("start")
     public ResponseEntity<ApiResponse<String>> start() {
@@ -26,14 +34,48 @@ public class PubnubController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<String>> sendMessage(@RequestParam String message) {
+    public ResponseEntity<ApiResponse<String>> sendMessage(@RequestHeader("Authorization") String authHeader,
+                                                           @RequestParam Long userId ,
+                                                           @RequestParam String message,
+                                                           @RequestParam String channel) {
+        String token = authHeader.replace("Bearer ", "");
+        Long userIdByAuth = jwtTokenProvider.validateAndGetUserId(token);
 
-        pubnubPublishService.sendMessage("test_channel", message);
+        //token과 userid 대조
+        if(!Objects.equals(userIdByAuth, userId)){
+            return ResponseEntity.ok(new ApiResponse<>(ErrorCode.INVALID_TOKEN));
+        }
+
+        Long roomId = chatRoomService.getChatRoomId(userIdByAuth);
+
+        //요청한 channel에 해당 Userid가 있는지 (임시)
+        if(!Objects.equals(roomId, Long.valueOf(channel))){
+            return ResponseEntity.ok(new ApiResponse<>(ErrorCode.DATA_NOT_FOUND));
+        }
+
+        pubnubPublishService.sendMessage(channel, message);
         return ResponseEntity.ok(new ApiResponse<>(200 , "전송 성공" , null));
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<String>> receiveMessage(@RequestParam String channel) {
+    public ResponseEntity<ApiResponse<String>> receiveMessage(@RequestHeader("Authorization") String authHeader,
+                                                              @RequestParam Long userId,
+                                                              @RequestParam String channel) {
+
+        String token = authHeader.replace("Bearer ", "");
+        Long userIdByAuth = jwtTokenProvider.validateAndGetUserId(token);
+
+        //token과 userid 대조
+        if(!Objects.equals(userIdByAuth, userId)){
+            return ResponseEntity.ok(new ApiResponse<>(ErrorCode.INVALID_TOKEN));
+        }
+
+        Long roomId = chatRoomService.getChatRoomId(userIdByAuth);
+
+        //요청한 channel에 해당 Userid가 있는지 (임시)
+        if(!Objects.equals(roomId, Long.valueOf(channel))){
+            return ResponseEntity.ok(new ApiResponse<>(ErrorCode.DATA_NOT_FOUND));
+        }
 
         pubnubPublishService.receiveMessages(channel);
         return ResponseEntity.ok(new ApiResponse<>(200 , "전송 성공" , null));
@@ -41,15 +83,28 @@ public class PubnubController {
 
     //실시간 통신 지원하는 용도인 듯
     @PostMapping("addListener")
-    public ResponseEntity<ApiResponse<Void>> addListener(@RequestParam String channel){
+    public ResponseEntity<ApiResponse<Void>> addListener(@RequestHeader("Authorization") String authHeader,
+                                                         @RequestParam Long userId,
+                                                         @RequestParam String channel){
+
+        String token = authHeader.replace("Bearer ", "");
+        Long userIdByAuth = jwtTokenProvider.validateAndGetUserId(token);
+
+        //token과 userid 대조
+        if(!Objects.equals(userIdByAuth, userId)){
+            return ResponseEntity.ok(new ApiResponse<>(ErrorCode.INVALID_TOKEN));
+        }
+
+        Long roomId = chatRoomService.getChatRoomId(userIdByAuth);
+
+        //요청한 channel에 해당 Userid가 있는지 (임시)
+        if(!Objects.equals(roomId, Long.valueOf(channel))){
+            return ResponseEntity.ok(new ApiResponse<>(ErrorCode.DATA_NOT_FOUND));
+        }
+
         pubnubPublishService.addListener(channel);
         return ResponseEntity.ok(new ApiResponse<>(200,"수신 성공",null));
     }
-
-
-
-
-
 
 
 

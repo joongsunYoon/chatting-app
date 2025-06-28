@@ -3,7 +3,7 @@ package com.chatting.chatMessage.service;
 import com.chatting.chatMessage.dto.MessageRequestDto;
 import com.chatting.chatMessage.model.ChatMessage;
 import com.chatting.chatMessage.repository.MessageRepository;
-import com.chatting.chattingRoom.model.ChatRoom;
+import com.chatting.chatRoom.model.ChatRoom;
 import com.chatting.user.model.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class MessageService {
     public ChatMessage saveMessage(MessageRequestDto dto) {
         ChatMessage message = ChatMessage.builder()
                 .sender(Users.builder().userId(dto.getSenderId()).build()) // FK 참조
-                .chatRoom(ChatRoom.builder().roomId(dto.getRoomId()).build())
+                .chatRoom(ChatRoom.builder().chatRoomId(dto.getRoomId()).build())
                 .message(dto.getMessage())
                 .sentAt(Timestamp.valueOf(LocalDateTime.now()))
                 .isRead(false)

@@ -1,6 +1,6 @@
 package com.chatting.chatMessage.model;
 
-import com.chatting.chattingRoom.model.ChatRoom;
+import com.chatting.chatRoom.model.ChatRoom;
 import com.chatting.user.model.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

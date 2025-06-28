@@ -20,15 +20,11 @@ import java.util.List;
 public class ChatRoom {
 
     @Id
-    @Column(name = "chat_room_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomId;
+    private Long chatRoomId;
 
 
-    @Column(name = "created_at")
     private Timestamp createdAt;
-
-    @Column(name = "updated_at")
     private Timestamp updatedAt;
 
 

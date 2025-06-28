@@ -6,6 +6,8 @@ import com.chatting.chatRoom.model.ChatRoom;
 import com.chatting.chatRoom.model.ChatRoomMember;
 import com.chatting.chatRoom.repository.ChatRoomMembersRepository;
 import com.chatting.chatRoom.repository.ChatRoomRepository;
+import com.chatting.global.exception.CustomException;
+import com.chatting.global.exception.ErrorCode;
 import com.chatting.user.model.Users;
 import com.chatting.user.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 public class ChatRoomService {
 
     private final AffinityRepository affinityRepository;
-    private final ChatRoomRepository chatRoomsRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMembersRepository chatRoomMembersRepository;
     private final UsersRepository usersRepository;
 
@@ -113,7 +115,7 @@ public class ChatRoomService {
         Users user1 = usersRepository.findById(user1Id).orElseThrow();
         Users user2 = usersRepository.findById(user2Id).orElseThrow();
 
-        ChatRoom room = chatRoomsRepository.save(ChatRoom.builder().build());
+        ChatRoom room = chatRoomRepository.save(ChatRoom.builder().build());
 
         chatRoomMembersRepository.save(ChatRoomMember.of(room, user1));
         chatRoomMembersRepository.save(ChatRoomMember.of(room, user2));
@@ -121,4 +123,14 @@ public class ChatRoomService {
 
     // Affinity 두 개 (userId -> otherId, otherId -> userId) 쌍을 하나로 묶는 record
     private record AffinityPairDetail(Affinity given, Affinity received) {}
+
+    public Long getChatRoomId(Long userId) {
+        ChatRoomMember chatRoomMember = chatRoomMembersRepository.findByUserUserId(userId)
+                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomMember.getChatRoom().getChatRoomId())
+                .orElseThrow(()-> new CustomException(ErrorCode.DATA_NOT_FOUND));
+
+        return chatRoom.getChatRoomId();
+
+    }
 }

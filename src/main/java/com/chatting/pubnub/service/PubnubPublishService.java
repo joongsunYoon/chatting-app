@@ -33,7 +33,7 @@ public class PubnubPublishService {
 
     public void sendMessage(String channel, String message) {
         pubnub.publish()
-                .channel("test_channel")
+                .channel(channel)
                 .message(message)
                 .async(result -> {
                     if(result.isSuccess()) {
@@ -46,10 +46,16 @@ public class PubnubPublishService {
 
     public void receiveMessages(String channel) {
 
+        // 채널 구독 시작
+        pubnub.subscribe()
+                .channels(List.of(channel))
+                .execute();
+
         pubnub.fetchMessages()
                 .channels(List.of(channel))
                 .includeMessageActions(true)
                 .async(result -> {
+                    System.out.println("Received messages with timetoken: " + result.getOrNull());
                     if(result.isSuccess()) {
                         List<PNFetchMessageItem> list = result.getOrNull().component1().get(channel);
                         for(PNFetchMessageItem item : list) {
