@@ -12,7 +12,10 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -44,27 +47,38 @@ public class PubnubPublishService {
                 });
     }
 
-    public void receiveMessages(String channel) {
+    public List<String> receiveMessages(String channel) {
 
         // 채널 구독 시작
         pubnub.subscribe()
                 .channels(List.of(channel))
                 .execute();
 
+        CompletableFuture<List<String>> future = new CompletableFuture<>();
+
         pubnub.fetchMessages()
                 .channels(List.of(channel))
                 .includeMessageActions(true)
                 .async(result -> {
-                    System.out.println("Received messages with timetoken: " + result.getOrNull());
                     if(result.isSuccess()) {
+                        List<String> chatList = new LinkedList<>();
                         List<PNFetchMessageItem> list = result.getOrNull().component1().get(channel);
+
                         for(PNFetchMessageItem item : list) {
+                            chatList.add(item.getMessage().toString());
                             System.out.println("Received message with timetoken: " + item.getMessage() + ", " + item.getTimetoken());
                         }
+                        future.complete(chatList);
                     }else{
                         System.err.println("Got error: " + result.exceptionOrNull());
                     }
                 });
+        try {
+            return future.get(); // 비동기 결과 기다림 (blocking)
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
 
     }
 

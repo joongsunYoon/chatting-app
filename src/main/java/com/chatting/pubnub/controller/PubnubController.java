@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -54,13 +55,13 @@ public class PubnubController {
         }
 
         pubnubPublishService.sendMessage(channel, message);
-        return ResponseEntity.ok(new ApiResponse<>(200 , "전송 성공" , null));
+        return ResponseEntity.ok(new ApiResponse<>(200 , "채팅 전송 완료" , null));
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<String>> receiveMessage(@RequestHeader("Authorization") String authHeader,
-                                                              @RequestParam Long userId,
-                                                              @RequestParam String channel) {
+    public ResponseEntity<ApiResponse<List<String>>> receiveMessage(@RequestHeader("Authorization") String authHeader,
+                                                                    @RequestParam Long userId,
+                                                                    @RequestParam String channel) {
 
         String token = authHeader.replace("Bearer ", "");
         Long userIdByAuth = jwtTokenProvider.validateAndGetUserId(token);
@@ -77,8 +78,7 @@ public class PubnubController {
             return ResponseEntity.ok(new ApiResponse<>(ErrorCode.DATA_NOT_FOUND));
         }
 
-        pubnubPublishService.receiveMessages(channel);
-        return ResponseEntity.ok(new ApiResponse<>(200 , "전송 성공" , null));
+        return ResponseEntity.ok(new ApiResponse<>(200 , "채팅 목록 조회 완료" , pubnubPublishService.receiveMessages(channel)));
     }
 
     //실시간 통신 지원하는 용도인 듯
