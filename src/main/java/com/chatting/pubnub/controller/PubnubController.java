@@ -1,5 +1,7 @@
 package com.chatting.pubnub.controller;
 
+import com.chatting.chatMessage.dto.MessageRequestDto;
+import com.chatting.chatMessage.service.MessageService;
 import com.chatting.chatRoom.service.ChatRoomService;
 import com.chatting.global.exception.ErrorCode;
 import com.chatting.global.exception.GlobalExceptionHandler.ApiResponse;
@@ -15,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,10 +27,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PubnubController {
 
-    private final PubNub pubNub;
     private final PubnubPublishService pubnubPublishService;
     private final JwtTokenProvider jwtTokenProvider;
     private final ChatRoomService chatRoomService;
+    private final MessageService messageService;
 
     @PostMapping("start")
     public ResponseEntity<ApiResponse<String>> start() {
@@ -55,6 +59,7 @@ public class PubnubController {
         }
 
         pubnubPublishService.sendMessage(channel, message);
+        messageService.saveMessage(new MessageRequestDto(message , Long.valueOf(channel) , userId));
         return ResponseEntity.ok(new ApiResponse<>(200 , "채팅 전송 완료" , null));
     }
 

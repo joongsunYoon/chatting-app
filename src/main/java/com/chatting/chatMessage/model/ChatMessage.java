@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 public class ChatMessage {
     @Id
     @Column(name = "message_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
 
     private String message;

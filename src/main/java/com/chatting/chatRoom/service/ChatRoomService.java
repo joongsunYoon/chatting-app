@@ -26,7 +26,7 @@ public class ChatRoomService {
     private final UsersRepository usersRepository;
 
     //특허 알고리즘을 활용한 채팅방 생성
-    public void createChatRoomForUser(Long userId) {
+    public Long createChatRoomForUser(Long userId) {
         List<Affinity> affinities = affinityRepository.findAll();
 
         // 상호 하트를 주고 받은 사용자와의 관계 저장
@@ -45,12 +45,12 @@ public class ChatRoomService {
             reverse.ifPresent(b -> mutualMap.put(otherId, new AffinityPairDetail(a, b)));
         }
 
-        if (mutualMap.isEmpty()) return;
+        if (mutualMap.isEmpty()) return 0L;
 
         // 사건이 1개일 경우
         if (mutualMap.size() == 1) {
-            createRoom(userId, mutualMap.keySet().iterator().next());
-            return;
+            return createRoom(userId, mutualMap.keySet().iterator().next());
+
         }
 
         // 사건이 여러 개인 경우: 최고 점수 찾기
@@ -64,15 +64,17 @@ public class ChatRoomService {
                 .toList();
 
         if (topEvents.size() == 1) {
-            createRoom(userId, topEvents.get(0).getKey());
-            return;
+            return createRoom(userId, topEvents.get(0).getKey());
+
         }
 
         // 최고 점수 쌍이 여러 개인 경우
         Map.Entry<Long, AffinityPairDetail> selected = selectBestAmongEquals(userId, topEvents);
         if (selected != null) {
-            createRoom(userId, selected.getKey());
+            return createRoom(userId, selected.getKey());
         }
+
+        return 0L;
     }
 
     private Map.Entry<Long, AffinityPairDetail> selectBestAmongEquals(
@@ -111,7 +113,7 @@ public class ChatRoomService {
     }
 
     //채팅방 생성 후 사용자들 매핑
-    private void createRoom(Long user1Id, Long user2Id) {
+    private Long createRoom(Long user1Id, Long user2Id) {
         Users user1 = usersRepository.findById(user1Id).orElseThrow();
         Users user2 = usersRepository.findById(user2Id).orElseThrow();
 
@@ -119,6 +121,12 @@ public class ChatRoomService {
 
         chatRoomMembersRepository.save(ChatRoomMember.of(room, user1));
         chatRoomMembersRepository.save(ChatRoomMember.of(room, user2));
+        user1.setIsMatched(room.getChatRoomId());
+        user2.setIsMatched(room.getChatRoomId());
+        usersRepository.save(user1);
+        usersRepository.save(user2);
+
+        return room.getChatRoomId();
     }
 
     // Affinity 두 개 (userId -> otherId, otherId -> userId) 쌍을 하나로 묶는 record

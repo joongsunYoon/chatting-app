@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MatchedResponseDto {
-    Boolean isMatched;
+    Long isMatched;
 
     public static MatchedResponseDto fromEntity(Users user) {
         return MatchedResponseDto.builder()

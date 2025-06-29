@@ -58,19 +58,6 @@ public class UserService {
         }
     }
 
-    public void updateIsMatched(Long userId) {
-        try {
-            Users user = userRepository.findById(userId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.DATA_NOT_FOUND));
-
-            user.setIsMatched(true);  // 상태 업데이트
-            userRepository.save(user);
-
-        } catch (IllegalArgumentException e) {
-            throw new CustomException(ErrorCode.INVALID_DATA);
-
-        }
-    }
 
     public Integer getUserAffinityQuantity(Long userId) {
 

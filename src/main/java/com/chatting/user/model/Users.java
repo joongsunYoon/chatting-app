@@ -26,7 +26,7 @@ public class Users {
     private LocalDate birthdate;
     private String nickname;
     private String name;
-    private Boolean isMatched;
+    private Long isMatched;
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Integer affinityQuantity;
