@@ -24,14 +24,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        if (!uri.startsWith("/api")) {
+        if (uri.startsWith("/api/dev/token")) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+        String token = request.getHeader("Authorization");
+        if (token != null) {
             try {
                 jwtTokenProvider.validateAndGetUserId(token);
             } catch (Exception e) {
