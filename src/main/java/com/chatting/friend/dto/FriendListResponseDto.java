@@ -19,6 +19,7 @@ public class FriendListResponseDto {
     private String phone;
     private String bio;
     private LocalDate birthdate;
+    private String profile;
 
     public static FriendListResponseDto fromEntity(Users user) {
         return FriendListResponseDto.builder()
@@ -27,6 +28,7 @@ public class FriendListResponseDto {
                 .phone(user.getPhone())
                 .bio(user.getBio())
                 .birthdate(user.getBirthdate())
+                .profile(user.getProfile())
                 .build();
     }
 
