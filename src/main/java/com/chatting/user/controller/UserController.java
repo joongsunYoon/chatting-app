@@ -20,7 +20,14 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponse<>(200, "Affinity 현황 조회 성공", affinityQuantity));
     }
 
+    @PatchMapping("/{userId}/affinity-quantity")
+    public ResponseEntity<ApiResponse<Integer>> updateAffinityQuantity(@RequestHeader("Authorization") String authHeader,
+                                                                    @PathVariable Long userId,
+                                                                    @RequestParam Integer affinityQuantity){
+        Integer quantity = userService.updateAffinityQuantity(userId, affinityQuantity);
 
+        return ResponseEntity.ok(new ApiResponse<>(200, "Affinity 수정 성공", quantity));
 
+    }
 
 }
