@@ -6,15 +6,15 @@ import lombok.Getter;
 
 @Getter
 public class ReceivedAffinityResponseDto {
-    private final String nickName;
+    private final String nickname;
     private final String name;
     private final String bio;
     private final String phone;
     private final Long affinityScore;
 
 
-    private ReceivedAffinityResponseDto(String nickName, String name, String bio, String phone, Long affinityScore) {
-        this.nickName = nickName;
+    private ReceivedAffinityResponseDto(String nickname, String name, String bio, String phone, Long affinityScore) {
+        this.nickname = nickname;
         this.name = name;
         this.bio = bio;
         this.phone = phone;

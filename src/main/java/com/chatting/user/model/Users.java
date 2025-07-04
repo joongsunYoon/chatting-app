@@ -30,16 +30,5 @@ public class Users {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private Integer affinityQuantity;
-
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = Timestamp.valueOf(LocalDateTime.now());
-        updatedAt = Timestamp.valueOf(LocalDateTime.now());
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = Timestamp.valueOf(LocalDateTime.now());
-    }
+    private String profile;
 }

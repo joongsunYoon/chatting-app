@@ -22,30 +22,6 @@ public class UserService {
         this.userSessionRepository = userSessionRepository;
     }
 
-    public Users registerUser(UserRegistrationDto userRegistrationDto) {
-        Users user = Users.builder()
-                .username(userRegistrationDto.getUsername())
-                .email(userRegistrationDto.getEmail())
-                .password(userRegistrationDto.getPassword())
-                .name(userRegistrationDto.getName())
-                .phone(userRegistrationDto.getPhone())
-                .build();
-
-        return userRepository.save(user);
-    }
-
-
-    public boolean login(String username, String password) {
-
-        return userRepository.findByUsername(username)
-                .map(user -> { return user.getPassword().equals(password);})
-                .orElse(false);
-    }
-
-    public Optional<Users> findByUsername(String userName) {
-        return userRepository.findByUsername(userName);
-    }
-
     public MatchedResponseDto isMatched(Long userId) {
         try {
             Users user = userRepository.findById(userId)
@@ -67,6 +43,12 @@ public class UserService {
 
     }
 
+    public Integer updateAffinityQuantity(Long userId, Integer quantity) {
 
+        quantity = userRepository.findByUserId(userId)
+                .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND))
+                .getAffinityQuantity() + quantity;
+        return quantity;
+    }
 
 }
