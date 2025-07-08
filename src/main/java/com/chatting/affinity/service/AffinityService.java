@@ -48,7 +48,7 @@ public class AffinityService {
 
         if(optionalAffinity.isPresent()){
             affinity = optionalAffinity.get();
-            affinity.setAffinityScore(dto.getAffinityScore() +  usedAffinityScore);
+            affinity.setAffinityScore(dto.getAffinityScore() + usedAffinityScore);
         }else{
             Users fromUser = usersRepository.findById(id)
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -60,11 +60,18 @@ public class AffinityService {
                     .fromUser(fromUser)
                     .toUser(toUser)
                     .affinityScore(Long.valueOf(usedAffinityScore))
-                    .lastChangeDirection(Affinity.Direction.PLUS)
+                    .lastChangeDirection(usedAffinityScore > 0 ? Affinity.Direction.PLUS :  Affinity.Direction.MINUS)
                     .build();
         }
 
         affinityRepository.save(affinity);
+
+        //사용한 만큼 사용자에게서 차감
+        Users user =  usersRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        user.setAffinityQuantity(user.getAffinityQuantity() - usedAffinityScore);
+        usersRepository.save(user);
+
     }
 
 
