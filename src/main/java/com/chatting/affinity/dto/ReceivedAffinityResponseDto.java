@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class ReceivedAffinityResponseDto {
+    private final Long userId;
     private final String nickname;
     private final String name;
     private final String bio;
@@ -13,7 +14,8 @@ public class ReceivedAffinityResponseDto {
     private final Long affinityScore;
 
 
-    private ReceivedAffinityResponseDto(String nickname, String name, String bio, String phone, Long affinityScore) {
+    private ReceivedAffinityResponseDto(Long userId, String nickname, String name, String bio, String phone, Long affinityScore) {
+        this.userId = userId;
         this.nickname = nickname;
         this.name = name;
         this.bio = bio;
@@ -24,6 +26,7 @@ public class ReceivedAffinityResponseDto {
     public static ReceivedAffinityResponseDto fromEntity(Affinity affinity) {
         Users user = affinity.getToUser();
         return new ReceivedAffinityResponseDto(
+                user.getUserId(),
                 user.getNickname(),
                 user.getName(),
                 user.getBio(),

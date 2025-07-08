@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class FriendListResponseDto {
+    private Long userId;
     private String name;
     private String nickname;
     private String phone;
@@ -23,6 +24,7 @@ public class FriendListResponseDto {
 
     public static FriendListResponseDto fromEntity(Users user) {
         return FriendListResponseDto.builder()
+                .userId(user.getUserId())
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .phone(user.getPhone())
