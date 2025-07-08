@@ -48,6 +48,7 @@ public class UserService {
         quantity = userRepository.findByUserId(userId)
                 .orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND))
                 .getAffinityQuantity() + quantity;
+        userRepository.updateAffinityQuantity(userId, quantity);
         return quantity;
     }
 
